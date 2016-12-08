@@ -1,5 +1,10 @@
 package com.weixk.helloworld.domain;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.*;
 
 /**
@@ -15,8 +20,10 @@ public class User {
     @Column(name = "id")
     private Long id;
     @Column(name = "name")
+    @NotEmpty(message = "名字不能为空")
     private String name;
     @Column(name = "email")
+    @Email(message = "邮箱格式不正确")
     private String email;
     @Transient
     private String token;
@@ -36,8 +43,16 @@ public class User {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {

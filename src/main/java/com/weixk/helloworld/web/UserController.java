@@ -1,17 +1,18 @@
 package com.weixk.helloworld.web;
 
-import com.alibaba.fastjson.JSON;
-import com.weixk.helloworld.dao.UserDao;
+import com.weixk.helloworld.domain.UserDao;
 import com.weixk.helloworld.domain.Result;
 import com.weixk.helloworld.domain.User;
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.JsonParser;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 /**
@@ -20,12 +21,15 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/user")
+@Validated
 public class UserController {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @RequestMapping(value = "/add")
     public Result<User> add(@RequestParam(value = "name") String name, @RequestParam(value = "email") String email) {
@@ -69,13 +73,18 @@ public class UserController {
     }
 
     @RequestMapping(value = "/find-user", method = RequestMethod.POST)
-    public Result<User> getUserByIdFromBodyParam(@RequestParam(value = "id") long id) {
-        if (id <= 0)
-            return new Result<User>(0, "id不能小于0", null);
-        User user = userDao.findOne(id);
-        if (user == null)
-            return new Result<User>(0, "用户不存在", null);
-        return new Result<User>(1, "查询成功", user);
+    public Result<User> getUserByIdFromBodyParam(@Min(value = 1, message = "id必须大于等于1") @RequestParam(value = "id") long id
+                                                , BindingResult result) {
+        if (result.hasErrors()) {
+            return new Result<User>(0, "id必须大于等于1", null);
+        } else {
+            if (id <= 0)
+                return new Result<User>(0, "id不能小于0", null);
+            User user = userDao.findOne(id);
+            if (user == null)
+                return new Result<User>(0, "用户不存在", null);
+            return new Result<User>(1, "查询成功", user);
+        }
     }
 
     @RequestMapping(value = "/find-by-name")
@@ -118,5 +127,18 @@ public class UserController {
         if (users == null)
             return new Result<List<User>>(0, "用户不存在", null);
         return new Result<List<User>>(1, "查询成功", users);
+    }
+
+    @RequestMapping(value = "/post-user", method = RequestMethod.POST)
+    public Result<User> postUser(@Valid User user, BindingResult result) {
+        if (result.hasErrors()) {
+            System.out.println("result error");
+            return new Result<User>(0, "数据格式非法", null);
+        } else {
+            User u = userDao.save(user);
+            if (user == null)
+                return new Result<User>(0, "添加用户失败", null);
+            return new Result<User>(1, "添加用户成功", user);
+        }
     }
 }

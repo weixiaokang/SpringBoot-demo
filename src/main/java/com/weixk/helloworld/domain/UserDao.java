@@ -1,6 +1,5 @@
-package com.weixk.helloworld.dao;
+package com.weixk.helloworld.domain;
 
-import com.weixk.helloworld.domain.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 

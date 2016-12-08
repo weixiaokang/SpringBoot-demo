@@ -3,12 +3,19 @@ package com.weixk.helloworld;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.weixk.helloworld.filter.ValidatorFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Hello world!
@@ -23,7 +30,10 @@ public class Application
         SpringApplication.run(Application.class, "--server.port=8080");
         log.info("应用启动");
     }
-
+    @Bean
+    public JedisConnectionFactory jedisConnectionFactory() {
+        return new JedisConnectionFactory();
+    }
     /**
      * 使用fastjson将对象转json字符串
      * @return 消息转换器
@@ -35,5 +45,22 @@ public class Application
         config.setSerializerFeatures(SerializerFeature.PrettyFormat);
         converter.setFastJsonConfig(config);
         return new HttpMessageConverters(converter);
+    }
+
+    @Bean
+    public MethodValidationPostProcessor methodValidationPostProcessor() {
+        return new MethodValidationPostProcessor();
+    }
+
+    @Bean
+    public FilterRegistrationBean validatorFilter() {
+        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+        filterRegistrationBean.setName("validator");
+        ValidatorFilter validatorFilter = new ValidatorFilter();
+        filterRegistrationBean.setFilter(validatorFilter);
+        List<String> urls = new ArrayList<String>();
+        urls.add("/valid/*");
+        filterRegistrationBean.setUrlPatterns(urls);
+        return filterRegistrationBean;
     }
 }
