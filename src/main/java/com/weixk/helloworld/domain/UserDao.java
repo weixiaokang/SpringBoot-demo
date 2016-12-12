@@ -11,12 +11,13 @@ import java.util.List;
  */
 public interface UserDao extends CrudRepository<User, Long>{
 
-    List<User> findUserByName(String name);
+    User findUserByEmail(String email);
 
-    @Query("select u from User u where u.name=:name")
-    List<User> findUserByN(String name);
+    List<User> findUserByNickname(String name);
+    @Query("select u from User u where u.nickname=:nickname")
+    List<User> findUserByN(String nickname);
     @Query(value = "select * from user where email=?", nativeQuery = true)
     List<User> findUserByE(String email);
-    @Query(value = "select * from user where name=?1 and email=?2", nativeQuery = true)
-    List<User> findUserByNE(String name, String email);
+    @Query(value = "select * from user where nickname=?1 and email=?2", nativeQuery = true)
+    List<User> findUserByNE(String nickname, String email);
 }

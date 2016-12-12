@@ -1,9 +1,5 @@
 package com.weixk.helloworld.domain;
 
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 
@@ -19,24 +15,22 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    @Column(name = "name")
-    @NotEmpty(message = "名字不能为空")
-    private String name;
+    @Column(name = "nickname")
+    private String nickname;
     @Column(name = "email")
-    @Email(message = "邮箱格式不正确")
     private String email;
+    @Column(name = "password")
+    private String password;
     @Transient
     private String token;
+
     public User() {
 
     }
-    public User(String name, String email) {
-        this.name = name;
+    public User(String name, String email, String password) {
+        this.nickname = name;
         this.email = email;
-    }
-    public User(Long id, String name) {
-        this.id = id;
-        this.name = name;
+        this.password = password;
     }
 
     public Long getId() {
@@ -47,12 +41,20 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getEmail() {

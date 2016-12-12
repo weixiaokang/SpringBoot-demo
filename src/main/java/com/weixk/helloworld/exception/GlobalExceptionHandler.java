@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.validation.ConstraintViolationException;
 import java.io.IOException;
+import java.util.List;
 
 /**
  *
@@ -25,9 +27,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = BindException.class)
     public Result validHandler(HttpServletRequest request, BindException exception) throws IOException {
         StringBuilder builder = new StringBuilder();
-        for (FieldError error : exception.getBindingResult().getFieldErrors()) {
-            builder.append(error.getDefaultMessage());
+        List<FieldError> errors = exception.getBindingResult().getFieldErrors();
+        if (errors != null && errors.size() != 0) {
+            builder.append(errors.get(0).getDefaultMessage());
         }
         return new Result(0, builder.toString());
     }
+
+//    @ExceptionHandler(value = ConstraintViolationException.class)
+//    public Result validMethodHandler(HttpServletRequest request, ConstraintViolationException exception) throws IOException {
+//        return new Result(0, exception.getLocalizedMessage());
+//    }
 }
