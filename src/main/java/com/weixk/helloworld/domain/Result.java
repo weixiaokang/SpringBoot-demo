@@ -1,7 +1,4 @@
 package com.weixk.helloworld.domain;
-
-import com.alibaba.fastjson.JSON;
-
 /**
  * 统一接口数据格式
  * Created by weixk on 16/12/2.

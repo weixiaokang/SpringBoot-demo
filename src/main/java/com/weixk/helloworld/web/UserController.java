@@ -61,7 +61,7 @@ public class UserController {
         return new Result<User>(1, "查询成功", user);
     }
 
-    @RequestMapping(value = "/find-by-name")
+    @PostMapping(value = "/find-by-name")
     public Result<List<User>> getUserByName(@RequestParam(value = "name") String name) {
         if (name == null || name.length() == 0)
             return new Result<List<User>>(0, "用户名不能为空", null);
@@ -119,31 +119,31 @@ public class UserController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public Result<User> register(@Valid UserResgiter userResgiter) {
         if (!userResgiter.getPwd().equals(userResgiter.getValid_pwd()))
-            return new Result<User>(0, "两次输入密码不一致");
+            return new Result<>(0, "两次输入密码不一致");
         User user = userDao.findUserByEmail(userResgiter.getEmail());
         if (user != null)
-            return new Result<User>(0, "该邮箱已注册");
+            return new Result<>(0, "该邮箱已注册");
         String pwd = DigestUtils.md5DigestAsHex(userResgiter.getPwd().trim().getBytes());
         user = new User(userResgiter.getNickname(), userResgiter.getEmail(), pwd);
         user = userDao.save(user);
         if (user != null)
-            return new Result<User>(1, "注册成功", user);
-        return new Result<User>(0, "注册失败");
+            return new Result<>(1, "注册成功", user);
+        return new Result<>(0, "注册失败");
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public Result<User> login(@Valid UserLogin userLogin) {
         User user = userDao.findUserByEmail(userLogin.getEmail());
         if (user == null)
-            return new Result<User>(0, "用户不存在，请检查邮箱是否正确");
+            return new Result<>(0, "用户不存在，请检查邮箱是否正确");
         String pwd = DigestUtils.md5DigestAsHex(userLogin.getPassword().trim().getBytes());
         if (!pwd.equals(user.getPassword()))
-            return new Result<User>(0, "密码不正确");
+            return new Result<>(0, "密码不正确");
         String baseToken = user.getId() + "&" + userLogin.getPassword() + "&" + System.currentTimeMillis();
         String token = DigestUtils.md5DigestAsHex(baseToken.getBytes());
         stringRedisTemplate.opsForValue().set(String.valueOf(user.getId()), token, 60, TimeUnit.SECONDS);
         user.setToken(token);
         user.setPassword(null);
-        return new Result<User>(1, "登录成功", user);
+        return new Result<>(1, "登录成功", user);
     }
 }
