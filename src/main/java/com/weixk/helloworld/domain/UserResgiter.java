@@ -1,16 +1,20 @@
 package com.weixk.helloworld.domain;
 
+import com.alibaba.fastjson.JSON;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.Column;
+import java.io.Serializable;
 
 /**
  *
  * Created by weixk on 16/12/10.
  */
-public class UserResgiter {
+public class UserResgiter implements Serializable {
+
+    private static final long serialVersionUID = -1L;
     @NotEmpty(message = "名字不能为空")
     @Length(max = 16, message = "昵称不能超过16个字符")
     private String nickname;
@@ -57,5 +61,10 @@ public class UserResgiter {
 
     public void setValid_pwd(String valid_pwd) {
         this.valid_pwd = valid_pwd;
+    }
+
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
     }
 }

@@ -3,6 +3,8 @@ package com.weixk.helloworld;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.weixk.helloworld.domain.User;
+import com.weixk.helloworld.domain.UserResgiter;
 import com.weixk.helloworld.filter.ValidatorFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +13,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
 import java.util.ArrayList;
@@ -33,6 +38,14 @@ public class Application
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         return new JedisConnectionFactory();
+    }
+    @Bean
+    public RedisTemplate<String, UserResgiter> userResgiterRedisTemplate(RedisConnectionFactory factory) {
+        RedisTemplate<String, UserResgiter> template = new RedisTemplate<>();
+        template.setConnectionFactory(jedisConnectionFactory());
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new RedisObjectSerializer());
+        return template;
     }
     /**
      * 使用fastjson将对象转json字符串
