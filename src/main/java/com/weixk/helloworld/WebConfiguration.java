@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class WebConfiguration extends WebMvcConfigurerAdapter {
 
-    private static final Logger log = LoggerFactory.getLogger(com.weixk.helloworld.intercepter.LoginCheckInterceptor.class);
+    private static final Logger log = LoggerFactory.getLogger(WebConfiguration.class);
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
