@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
+ * redis数据库测试
  * Created by weixk on 16/12/7.
  */
 @RestController

@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 /**
- *
+ * 图片保存到七牛云中
  * Created by weixk on 16/12/14.
  */
 @RestController

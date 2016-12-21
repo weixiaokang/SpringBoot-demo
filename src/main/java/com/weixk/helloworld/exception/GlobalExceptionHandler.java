@@ -10,12 +10,11 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.validation.ConstraintViolationException;
 import java.io.IOException;
 import java.util.List;
 
 /**
- *
+ * 捕获全局异常
  * Created by weixk on 16/12/7.
  */
 @ControllerAdvice

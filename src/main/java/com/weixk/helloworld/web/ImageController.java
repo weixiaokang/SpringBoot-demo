@@ -1,21 +1,17 @@
 package com.weixk.helloworld.web;
 
 import com.weixk.helloworld.domain.Result;
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.List;
 
 /**
- *
+ * 上传下载文件
  * Created by weixk on 16/12/13.
  */
 @RestController
