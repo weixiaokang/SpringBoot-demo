@@ -12,7 +12,7 @@ import java.io.Serializable;
  *
  * Created by weixk on 16/12/10.
  */
-public class UserResgiter implements Serializable {
+public class UserRegister implements Serializable {
 
     private static final long serialVersionUID = -1L;
     @NotEmpty(message = "名字不能为空")
@@ -27,7 +27,7 @@ public class UserResgiter implements Serializable {
     @Length(min = 8, max = 16, message = "密码长度为8~16字符")
     private String valid_pwd;
 
-    public UserResgiter() {
+    public UserRegister() {
 
     }
 

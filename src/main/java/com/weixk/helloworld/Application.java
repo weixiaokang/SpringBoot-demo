@@ -3,8 +3,8 @@ package com.weixk.helloworld;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.weixk.helloworld.config.RedisObjectSerializer;
 import com.weixk.helloworld.domain.User;
-import com.weixk.helloworld.domain.UserResgiter;
 import com.weixk.helloworld.filter.ValidatorFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +13,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -40,8 +39,8 @@ public class Application
         return new JedisConnectionFactory();
     }
     @Bean
-    public RedisTemplate<String, UserResgiter> userResgiterRedisTemplate(RedisConnectionFactory factory) {
-        RedisTemplate<String, UserResgiter> template = new RedisTemplate<>();
+    public RedisTemplate<String, User> userResgiterRedisTemplate() {
+        RedisTemplate<String, User> template = new RedisTemplate<>();
         template.setConnectionFactory(jedisConnectionFactory());
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new RedisObjectSerializer());
@@ -71,7 +70,7 @@ public class Application
         filterRegistrationBean.setName("validator");
         ValidatorFilter validatorFilter = new ValidatorFilter();
         filterRegistrationBean.setFilter(validatorFilter);
-        List<String> urls = new ArrayList<String>();
+        List<String> urls = new ArrayList<>();
         urls.add("/valid/*");
         filterRegistrationBean.setUrlPatterns(urls);
         return filterRegistrationBean;

@@ -2,9 +2,12 @@ package com.weixk.helloworld.web;
 
 import com.weixk.helloworld.domain.*;
 
+import com.weixk.helloworld.service.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.DigestUtils;
 import org.springframework.validation.BindingResult;
@@ -28,6 +31,41 @@ public class UserController {
     private UserDao userDao;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    private RedisTemplate<String, User> userRedisTemplate;
+    @Autowired
+    private EmailService emailService;
+
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public Result<User> register(@Valid UserRegister userResgiter) {
+        if (!userResgiter.getPwd().equals(userResgiter.getValid_pwd()))
+            return new Result<>(0, "两次输入密码不一致");
+        User user = userDao.findUserByEmail(userResgiter.getEmail());
+        if (user != null)
+            return new Result<>(0, "该邮箱已注册");
+        String pwd = DigestUtils.md5DigestAsHex(userResgiter.getPwd().trim().getBytes());
+        user = new User(userResgiter.getNickname(), userResgiter.getEmail(), pwd);
+        String token = DigestUtils.md5DigestAsHex(userResgiter.getEmail().getBytes());
+        userRedisTemplate.opsForValue().set(token, user, 30, TimeUnit.MINUTES);
+        String result = emailService.sendTempEmail(userResgiter.getEmail(), token);
+        return new Result<>(1, "信息已提交, 请点击邮箱中的链接激活");
+    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public Result<User> login(@Valid UserLogin userLogin) {
+        User user = userDao.findUserByEmail(userLogin.getEmail());
+        if (user == null)
+            return new Result<>(0, "用户不存在，请检查邮箱是否正确");
+        String pwd = DigestUtils.md5DigestAsHex(userLogin.getPassword().trim().getBytes());
+        if (!pwd.equals(user.getPassword()))
+            return new Result<>(0, "密码不正确");
+        String baseToken = user.getId() + "&" + userLogin.getPassword() + "&" + System.currentTimeMillis();
+        String token = DigestUtils.md5DigestAsHex(baseToken.getBytes());
+        stringRedisTemplate.opsForValue().set(String.valueOf(user.getId()), token, 60, TimeUnit.SECONDS);
+        user.setToken(token);
+        user.setPassword(null);
+        return new Result<>(1, "登录成功", user);
+    }
 
     @RequestMapping(value = "/{id}")
     public Result<User> getUserByIdFromPath(@PathVariable long id) {
@@ -114,36 +152,5 @@ public class UserController {
                 return new Result<User>(0, "添加用户失败", null);
             return new Result<User>(1, "添加用户成功", user);
         }
-    }
-
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public Result<User> register(@Valid UserResgiter userResgiter) {
-        if (!userResgiter.getPwd().equals(userResgiter.getValid_pwd()))
-            return new Result<>(0, "两次输入密码不一致");
-        User user = userDao.findUserByEmail(userResgiter.getEmail());
-        if (user != null)
-            return new Result<>(0, "该邮箱已注册");
-        String pwd = DigestUtils.md5DigestAsHex(userResgiter.getPwd().trim().getBytes());
-        user = new User(userResgiter.getNickname(), userResgiter.getEmail(), pwd);
-        user = userDao.save(user);
-        if (user != null)
-            return new Result<>(1, "注册成功", user);
-        return new Result<>(0, "注册失败");
-    }
-
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public Result<User> login(@Valid UserLogin userLogin) {
-        User user = userDao.findUserByEmail(userLogin.getEmail());
-        if (user == null)
-            return new Result<>(0, "用户不存在，请检查邮箱是否正确");
-        String pwd = DigestUtils.md5DigestAsHex(userLogin.getPassword().trim().getBytes());
-        if (!pwd.equals(user.getPassword()))
-            return new Result<>(0, "密码不正确");
-        String baseToken = user.getId() + "&" + userLogin.getPassword() + "&" + System.currentTimeMillis();
-        String token = DigestUtils.md5DigestAsHex(baseToken.getBytes());
-        stringRedisTemplate.opsForValue().set(String.valueOf(user.getId()), token, 60, TimeUnit.SECONDS);
-        user.setToken(token);
-        user.setPassword(null);
-        return new Result<>(1, "登录成功", user);
     }
 }

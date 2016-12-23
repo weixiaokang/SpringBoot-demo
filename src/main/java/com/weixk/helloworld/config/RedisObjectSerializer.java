@@ -1,4 +1,4 @@
-package com.weixk.helloworld;
+package com.weixk.helloworld.config;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.serializer.support.DeserializingConverter;
