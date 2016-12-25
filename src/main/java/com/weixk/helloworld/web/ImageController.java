@@ -33,7 +33,7 @@ public class ImageController {
         for (MultipartFile file : files) {
             if (file.isEmpty()) continue;
             try {
-                String path = file.getOriginalFilename() + "_" + System.currentTimeMillis();
+                String path = System.currentTimeMillis() + "_" + file.getOriginalFilename();
                 String fileName = IMG_PATH + path;
                 builder.append(SERVER).append("/img/download/").append(path).append(";");
                 byte[] bytes = file.getBytes();
