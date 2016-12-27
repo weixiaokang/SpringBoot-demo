@@ -1,6 +1,5 @@
 package com.weixk.helloworld;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -9,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.io.File;
 
 /**
  * Unit test for simple Application.
@@ -28,13 +25,10 @@ public class AppTest
     }
     @Test
     public void testLog() {
-        log.error("测试log日志打印！");
-    }
-    @Test
-    public void testStaticFile() {
-        String root = new File("").getAbsolutePath();
-        String path = root + File.separator + "static/email.html";
-        File file = new File(path);
-        Assert.assertTrue(file.exists());
+        log.trace("=================trace====================");
+        log.debug("=================debug====================");
+        log.info("==================info=====================");
+        log.warn("==================warn=====================");
+        log.error("=================error====================");
     }
 }
