@@ -32,9 +32,4 @@ public class GlobalExceptionHandler {
         }
         return new Result(0, builder.toString());
     }
-
-//    @ExceptionHandler(value = ConstraintViolationException.class)
-//    public Result validMethodHandler(HttpServletRequest request, ConstraintViolationException exception) throws IOException {
-//        return new Result(0, exception.getLocalizedMessage());
-//    }
 }
