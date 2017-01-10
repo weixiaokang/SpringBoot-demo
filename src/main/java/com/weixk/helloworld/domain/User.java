@@ -1,8 +1,11 @@
 package com.weixk.helloworld.domain;
 
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 用户类
@@ -22,9 +25,13 @@ public class User implements Serializable {
     @Column(name = "email")
     private String email;
     @Column(name = "password")
+    @JSONField(serialize = false)
     private String password;
     @Transient
     private String token;
+
+    @OneToMany(mappedBy = "user")
+    private List<Opt> opt;
 
     public User() {
 

@@ -70,63 +70,63 @@ public class UserController {
     @RequestMapping(value = "/{id}")
     public Result<User> getUserByIdFromPath(@PathVariable long id) {
         if (id <= 0)
-            return new Result<User>(0, "id不能小于0", null);
+            return new Result<>(0, "id不能小于0", null);
         User user = userDao.findOne(id);
         if (user == null)
-            return new Result<User>(0, "用户不存在", null);
-        return new Result<User>(1, "查询成功", user);
+            return new Result<>(0, "用户不存在", null);
+        return new Result<>(1, "查询成功", user);
     }
 
     @RequestMapping(value = "/user_id={id}")
     public Result<User> getUserByIdFromPathWithKey(@PathVariable(value = "id") long uid) {
         if (uid <= 0)
-            return new Result<User>(0, "id不能小于0", null);
+            return new Result<>(0, "id不能小于0", null);
         User user = userDao.findOne(uid);
         if (user == null)
-            return new Result<User>(0, "用户不存在", null);
-        return new Result<User>(1, "查询成功", user);
+            return new Result<>(0, "用户不存在", null);
+        return new Result<>(1, "查询成功", user);
     }
 
     @RequestMapping(value = "/find-user")
     public Result<User> getUserByIdFromQueryParam(@RequestParam(value = "id", required = false) Long id) {
         if (id == null)
-            return new Result<User>(0, "id不能为空", null);
+            return new Result<>(0, "id不能为空", null);
         if (id <= 0)
-            return new Result<User>(0, "id不能小于0", null);
+            return new Result<>(0, "id不能小于0", null);
         User user = userDao.findOne(id);
         if (user == null)
-            return new Result<User>(0, "用户不存在", null);
-        return new Result<User>(1, "查询成功", user);
+            return new Result<>(0, "用户不存在", null);
+        return new Result<>(1, "查询成功", user);
     }
 
     @PostMapping(value = "/find-by-name")
     public Result<List<User>> getUserByName(@RequestParam(value = "name") String name) {
         if (name == null || name.length() == 0)
-            return new Result<List<User>>(0, "用户名不能为空", null);
+            return new Result<>(0, "用户名不能为空", null);
         List<User> users = userDao.findUserByNickname(name);
         if (users == null)
-            return new Result<List<User>>(0, "用户不存在", null);
-        return new Result<List<User>>(1, "查询成功", users);
+            return new Result<>(0, "用户不存在", null);
+        return new Result<>(1, "查询成功", users);
     }
 
     @RequestMapping(value = "/find-by-n")
     public Result<List<User>> getUserByN(@RequestParam(value = "name") String name) {
         if (name == null || name.length() == 0)
-            return new Result<List<User>>(0, "用户名不能为空", null);
+            return new Result<>(0, "用户名不能为空", null);
         List<User> users = userDao.findUserByN(name);
         if (users == null)
-            return new Result<List<User>>(0, "用户不存在", null);
-        return new Result<List<User>>(1, "查询成功", users);
+            return new Result<>(0, "用户不存在", null);
+        return new Result<>(1, "查询成功", users);
     }
 
     @RequestMapping(value = "/find-by-e")
     public Result<List<User>> getUserByE(@RequestParam(value = "email") String email) {
         if (email == null || email.length() == 0)
-            return new Result<List<User>>(0, "邮箱不能为空", null);
+            return new Result<>(0, "邮箱不能为空", null);
         List<User> users = userDao.findUserByE(email);
         if (users == null)
-            return new Result<List<User>>(0, "用户不存在", null);
-        return new Result<List<User>>(1, "查询成功", users);
+            return new Result<>(0, "用户不存在", null);
+        return new Result<>(1, "查询成功", users);
     }
 
     @RequestMapping(value = "/find-by-ne")
@@ -145,12 +145,12 @@ public class UserController {
     public Result<User> postUser(@Valid User user, BindingResult result) {
         if (result.hasErrors()) {
             System.out.println("result error");
-            return new Result<User>(0, "数据格式非法", null);
+            return new Result<>(0, "数据格式非法", null);
         } else {
             User u = userDao.save(user);
             if (u == null)
-                return new Result<User>(0, "添加用户失败", null);
-            return new Result<User>(1, "添加用户成功", user);
+                return new Result<>(0, "添加用户失败", null);
+            return new Result<>(1, "添加用户成功", user);
         }
     }
 }

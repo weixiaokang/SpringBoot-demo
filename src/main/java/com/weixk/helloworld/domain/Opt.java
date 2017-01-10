@@ -3,7 +3,6 @@ package com.weixk.helloworld.domain;
 import com.alibaba.fastjson.annotation.JSONField;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -12,11 +11,11 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "opt")
-public class Option {
+public class Opt {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "_id")
-    private Long _id;
+    @Column(name = "id")
+    private Long id;
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "createtime")
     private Date createtime;
@@ -24,21 +23,29 @@ public class Option {
     @JSONField(serialize = false)
     private String msg;
 
-    public Option() {
+    @ManyToOne
+    private User user;
+    public Opt() {
 
     }
 
-    public Option(Date createtime, String msg) {
+    public Opt(Date createtime, String msg) {
         this.createtime = createtime;
         this.msg = msg;
     }
 
-    public Long get_id() {
-        return _id;
+    public Opt(Long id, Date createtime, String msg) {
+        this.id = id;
+        this.createtime = createtime;
+        this.msg = msg;
     }
 
-    public void set_id(Long _id) {
-        this._id = _id;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Date getCreatetime() {
@@ -55,5 +62,14 @@ public class Option {
 
     public void setMsg(String msg) {
         this.msg = msg;
+    }
+
+    @Override
+    public String toString() {
+        return "Opt{" +
+                "id=" + id +
+                ", createtime=" + createtime +
+                ", msg='" + msg + '\'' +
+                '}';
     }
 }
