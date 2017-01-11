@@ -2,6 +2,8 @@ package com.weixk.helloworld.web;
 
 import com.weixk.helloworld.domain.Opt;
 import com.weixk.helloworld.domain.OptionDao;
+import com.weixk.helloworld.domain.User;
+import com.weixk.helloworld.domain.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCountCallbackHandler;
@@ -10,8 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +26,8 @@ public class OptionController {
 
     @Autowired
     private OptionDao optionDao;
+    @Autowired
+    private UserDao userDao;
     @Autowired
     private EntityManager entityManager;
     @Autowired
@@ -49,10 +52,14 @@ public class OptionController {
 
     @GetMapping(value = "/test")
     public void test() {
-        List<Opt> list = entityManager.createNativeQuery("select * from opt", Opt.class)
-                .getResultList();
-        list.forEach(n -> {
-            System.out.println(n.toString());
+        List<Object[]> list = entityManager.createNativeQuery("select user.*, opt.createtime as createtime from user, opt where user.id=1 and opt.id=1", "user_opt").getResultList();
+        list.forEach(n->{
+            for (Object o : n) {
+//                if (o instanceof User)
+//                    System.out.println(((User)o).toString());
+//                System.out.println(o);
+                System.out.println(o.toString());
+            }
         });
     }
 }

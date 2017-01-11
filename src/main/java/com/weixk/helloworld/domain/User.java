@@ -11,6 +11,15 @@ import java.util.List;
  * 用户类
  * Created by Weixk on 16/11/19.
  */
+@SqlResultSetMapping(name = "user_opt"
+        , entities = {
+        @EntityResult(entityClass = User.class, fields = {
+                @FieldResult(name = "id", column = "id")
+                , @FieldResult(name = "nickname", column = "nickname")
+                , @FieldResult(name = "email", column = "email")
+                , @FieldResult(name = "password", column = "password")
+        })}
+        , columns = {@ColumnResult(name = "createtime")})
 @Entity
 @Table(name = "user")
 public class User implements Serializable {
@@ -80,5 +89,17 @@ public class User implements Serializable {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", nickname='" + nickname + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", token='" + token + '\'' +
+                ", opt=" + opt +
+                '}';
     }
 }
