@@ -46,6 +46,7 @@ public class Application
         template.setValueSerializer(new RedisObjectSerializer());
         return template;
     }
+
     /**
      * 使用fastjson将对象转json字符串
      * @return 消息转换器
