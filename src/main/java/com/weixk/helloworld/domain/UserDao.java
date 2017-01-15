@@ -14,6 +14,7 @@ import java.util.List;
  */
 public interface UserDao extends CrudRepository<User, Long>{
 
+    List<User> findAll();
     User findUserByEmail(String email);
     @Query("select u from User u where u.nickname=?")
     List<User> findUserByNickname(String name);

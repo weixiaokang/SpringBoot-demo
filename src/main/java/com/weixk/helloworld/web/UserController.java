@@ -36,6 +36,16 @@ public class UserController {
     @Autowired
     private EmailService emailService;
 
+    @RequestMapping(value = "/rest/{id}")
+    public User getByIdFromPath(@PathVariable long id) {
+
+        return userDao.findOne(id);
+    }
+    @RequestMapping(value = "/rest/all")
+    public List<User> getAll() {
+        return userDao.findAll();
+    }
+
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public Result<User> register(@Valid UserRegister userResgiter) {
         if (!userResgiter.getPwd().equals(userResgiter.getValid_pwd()))
@@ -76,7 +86,11 @@ public class UserController {
             return new Result<>(0, "用户不存在", null);
         return new Result<>(1, "查询成功", user);
     }
-
+    @RequestMapping(value = "/all")
+    public Result<List<User>> getAllUsers() {
+        List<User> result = userDao.findAll();
+        return new Result<>(1, "查询成功", result);
+    }
     @RequestMapping(value = "/user_id={id}")
     public Result<User> getUserByIdFromPathWithKey(@PathVariable(value = "id") long uid) {
         if (uid <= 0)
@@ -132,13 +146,13 @@ public class UserController {
     @RequestMapping(value = "/find-by-ne")
     public Result<List<User>> getUserByE(@RequestParam(value = "name") String name, @RequestParam(value = "email") String email) {
         if (name == null || name.length() == 0)
-            return new Result<List<User>>(0, "用户名不能为空", null);
+            return new Result<>(0, "用户名不能为空", null);
         if (email == null || email.length() == 0)
-            return new Result<List<User>>(0, "邮箱不能为空", null);
+            return new Result<>(0, "邮箱不能为空", null);
         List<User> users = userDao.findUserByNE(name, email);
         if (users == null)
-            return new Result<List<User>>(0, "用户不存在", null);
-        return new Result<List<User>>(1, "查询成功", users);
+            return new Result<>(0, "用户不存在", null);
+        return new Result<>(1, "查询成功", users);
     }
 
     @RequestMapping(value = "/post-user", method = RequestMethod.POST)
