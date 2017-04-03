@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @RestController
 @RequestMapping(value = "/redis")
 public class RedisController {
-
+    
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
     @RequestMapping(value = "/add")
