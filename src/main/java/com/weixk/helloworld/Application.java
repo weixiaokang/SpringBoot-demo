@@ -17,6 +17,14 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.view.JstlView;
+import org.thymeleaf.spring4.SpringTemplateEngine;
+import org.thymeleaf.spring4.view.ThymeleafViewResolver;
+import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
+import org.thymeleaf.templateresolver.TemplateResolver;
+//import org.thymeleaf.spring4.SpringTemplateEngine;
+//import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +41,30 @@ public class Application
     {
         SpringApplication.run(Application.class, "--server.port=8080");
         log.info("应用启动");
+    }
+
+    @Bean
+    public ThymeleafViewResolver thymeleafViewResolver() {
+        ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver();
+        templateResolver.setPrefix("/WEB-INF/");
+        templateResolver.setSuffix(".html");
+        templateResolver.setTemplateMode("HTML5");
+        SpringTemplateEngine engine = new SpringTemplateEngine();
+        engine.setTemplateResolver(templateResolver);
+        ThymeleafViewResolver resolver = new ThymeleafViewResolver();
+        resolver.setTemplateEngine(engine);
+        resolver.setOrder(1);
+        return resolver;
+    }
+    @Bean
+    public InternalResourceViewResolver internalResourceViewResolver() {
+        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+        resolver.setViewClass(JstlView.class);
+        resolver.setPrefix("/WEB-INF/");
+        resolver.setSuffix(".jsp");
+        resolver.setOrder(0);
+        resolver.setViewNames("jsp/*");
+        return resolver;
     }
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
